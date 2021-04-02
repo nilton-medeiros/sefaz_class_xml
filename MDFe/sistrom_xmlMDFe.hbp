@@ -1,0 +1,15 @@
+-hblib
+-osistrom_xmlmdfe
+-Iinclude
+-w2 -es2
+
+class_TinfMDFeSupl.prg
+class_TideMDFe.prg
+class_TinfDocMDFe.prg
+class_TinfMDFe.prg
+class_TinfModalMDFe.prg
+class_TinfMunCarrega.prg
+class_TMDFe.prg
+class_TprodPred.prg
+class_TrodoMDFe.prg
+class_Tseg.prg

@@ -1,0 +1,12 @@
+-hblib
+-osistrom_acbrMonitor
+-Iinclude
+-w2 -es2
+
+class_TACBr.prg
+class_TACBrMonitor.prg
+class_TCTeXMLtoPDF.prg
+class_TGerarPDFdeXML.prg
+class_THPDFDoc.prg
+class_TReadTXT.prg
+class_TReadXML.prg
