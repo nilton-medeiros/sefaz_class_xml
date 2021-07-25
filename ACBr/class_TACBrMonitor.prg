@@ -276,6 +276,9 @@ method Cancelar(xJust) class TACBrMonitor
    ::submit()
    if ::getReturnXML() .and. (::situacao $ 'CANCELADO|ENCERRADO')
       returnStatus := ::imprimirPDF()
+      if ! returnStatus
+         returnStatus := ::Consultar()
+      endif
    endif
 return returnStatus
 
@@ -453,7 +456,7 @@ method getReturnXML() class TACBrMonitor
    local xmlReturned := {}
    local startTime
    local returningFiles := '*.xml'
-   saveLog('Arquivo de comando: ' + ::inFile + hb_eol() + 'Aguardando retorno de ACBrMonitor...')
+   saveLog('Arquivo de comando: ' + ::inFile + ' | Aguardando retorno de ACBrMonitor...')
    sysWait(1)
    if ('cancelar' $ Lower(::command)) .or. ('encerrar' $ Lower(::command))
       returningFiles := '*-eve.xml'
@@ -621,6 +624,8 @@ method getReturnTXT() class TACBrMonitor
             endif
          elseif ('assinar' $ Lower(comando))
             ::xmlName := txt:xmlName
+         elseif ('cancelar' $ Lower(comando)) .and. ::cStat == '135'
+            ::situacao := 'CANCELADO'
          endif
          txtStatus := txt:isValid
       endif

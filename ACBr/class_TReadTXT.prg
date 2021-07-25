@@ -51,6 +51,8 @@ end class
 
 method new(txt_file, comando) class TReadTXT
    local lowerComando, tpDFe := Left(comando, hb_At('.', comando)-1)
+   local bytes, jsonText, jsonHash
+
    ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
    ::nProt := 'CTeMonitor'
    ::cStat := '000'
@@ -82,6 +84,23 @@ method new(txt_file, comando) class TReadTXT
                ::xMotivo := tpDFe + ': PDF do Evento gerado com sucesso'
                ::pdfName := SubStr(::text, At('C:\', ::text))
                ::pdfName := Left(::pdfName, At('.pdf', ::pdfName) + 3)
+            case ('cancelar' $ lowerComando) .and. ('cancelamento' $ Lower(::text))
+               jsonText := SubStr(::text, At('{', ::text), RAt( '}', ::text))
+               jsonText := Lower(jsonText)
+               bytes := hb_jsonDecode(jsonText, @jsonHash)
+               if !(bytes == 0) .and. hb_HGetRef(jsonHash, 'cancelamento')
+                  jsonHash := jsonHash['cancelamento']
+                  ::cStat := jsonHash['cstat']
+                  if ValType(::cStat) == "N"
+                     ::cStat := hb_ntos(::cStat)
+                  endif
+                  ::dhRecbto := Left(StrTran(jsonHash['dhrecbto'], 'T', ' '), 19)
+                  ::xMotivo := jsonHash['xmotivo']
+                  ::nProt := jsonHash['nprot']
+               else
+                  ::xMotivo := comando + ': Sem resposta da Sefaz'
+                  ::isValid := False
+               endif
             otherwise
                ::xMotivo := comando + ': Erro de comando'
                ::isValid := False
