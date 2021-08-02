@@ -62,6 +62,9 @@ method new(p) class Telement
 	::restriction := hb_HGetDef(p, 'restriction', "")
 	::required := hb_HGetDef(p, 'required', True)
 	::eType := hb_HGetDef(p, 'type', hb_HGetDef(p, 'eType', "C"))
+   if (::eType == 'C') .and. (Len(::value) > ::maxLength)
+      ::value := Left(AllTrim(::value), ::maxLength)
+   endif
 return self
 
 method setRequired(isRequired) class Telement

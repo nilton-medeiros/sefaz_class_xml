@@ -71,9 +71,16 @@ class TACBrMonitor
    data xMotivo readonly
    data nProt readonly
    data serviceStatus readonly
+   data cert_serial_number readonly
+   data cert_company_name readonly
+   data cert_cnpj readonly
+   data cert_expiration_date readonly
+   data cert_certifier readonly
+   data certificate_is_valid readonly
 
    method new() constructor
    method StatusServico()
+   method ObterCertificado()
    method Assinar()
    method Validar()
    method Enviar()
@@ -160,6 +167,7 @@ method new(params) class TACBrMonitor
    if !::serviceStatus
       AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'ACBrMonitor não está Ativo ou Instalado | Ambiente de ' + ::tpAmb})
    endif
+   ::certificate_is_valid := False
 return self
 
 method StatusServico() class TACBrMonitor
@@ -580,8 +588,14 @@ return Nil
 
 method getReturnTXT() class TACBrMonitor
    local target, txt, txtStatus := False
-   local startTime
-   local comando := Left(::command, At('(', ::command) - 1)
+   local startTime, days_lefts, msg_expiration
+   local comando
+
+   if ("(" $ ::command)
+      comando := Left(::command, At('(', ::command) - 1)
+   else
+      comando := ::command
+   endif
 
    saveLog( comando + ': ' + ::inFile + hb_eol() + 'Aguardando retorno de ACBrMonitor...')
    sysWait(3)
@@ -626,6 +640,28 @@ method getReturnTXT() class TACBrMonitor
             ::xmlName := txt:xmlName
          elseif ('cancelar' $ Lower(comando)) .and. ::cStat == '135'
             ::situacao := 'CANCELADO'
+         elseif ('obtercertificados' $ Lower(comando))
+            ::xMotivo := txt:xMotivo
+            ::cert_serial_number := txt:cert_serial_number
+            ::cert_company_name := txt:cert_company_name
+            ::cert_cnpj := txt:cert_cnpj
+            ::cert_expiration_date := txt:cert_expiration_date
+            ::cert_certifier := txt:cert_certifier
+            days_lefts := ::cert_expiration_date - Date()
+            if (days_lefts < 30)
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - No.Serie: ' + txt:cert_serial_number + ' | Ambiente de ' + ::tpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Empresa: ' + txt:cert_company_name + ' CNPJ: ' + txt:cert_cnpj + ' | Ambiente de ' + ::tpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Certificadora: ' + txt:cert_certifier + ' | Ambiente de ' + ::tpAmb})
+               if (days_lefts == 0)
+                  msg_expiration := 'Expirando hoje: ' + DToC(::cert_expiration_date)
+               elseif (days_lefts < 0)
+                  msg_expiration := 'Expirou em ' + DToC(::cert_expiration_date)
+               else
+                  msg_expiration := 'Expira em ' + hb_ntos(days_lefts) + ' dias!'
+               endif
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - ' + msg_expiration + ' | Ambiente de ' + ::tpAmb})
+               saveLog({'Certificado Digital:', hb_eol(), '  No.Série: ', ::cert_serial_number , hb_eol(), '  Empresa: ', ::cert_company_name + ' CNPJ: ' + ::cert_cnpj, hb_eol(), '  Cerificadora: ', ::cert_certifier, '  Validade: ' + msg_expiration})
+            endif
          endif
          txtStatus := txt:isValid
       endif
@@ -801,3 +837,19 @@ method foram_lidos(lidos) class TACBrMonitor
       endif
    endif
 return nRet
+
+method ObterCertificado() class TACBrMonitor
+   ::cert_serial_number := ''
+   ::cert_company_name := ''
+   ::cert_cnpj := ''
+   ::cert_expiration_date := ''
+   ::cert_certifier := ''
+   ::command := 'ACBr.ObterCertificados'
+   ::submit()
+   ::certificate_is_valid := ::getReturnTXT()
+   if !::certificate_is_valid
+      ::situacao := 'REJEITADO'
+      ::cStat := '291'
+   endif
+   saveLog({"Situação: ", ::situacao, " | cStat: ", ::cStat, " | Certificado A1 ", iif(::certificate_is_valid, 'VÁLIDO', 'INVÁLIDO')})
+return ::certificate_is_valid

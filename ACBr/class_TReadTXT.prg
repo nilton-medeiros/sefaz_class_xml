@@ -46,12 +46,17 @@ class TReadTXT
    data xmlName readonly
    data pdfName readonly
    data isValid readonly
+   data cert_serial_number readonly
+   data cert_company_name readonly
+   data cert_cnpj readonly
+   data cert_expiration_date readonly
+   data cert_certifier readonly
    method new(txt_file) constructor
 end class
 
 method new(txt_file, comando) class TReadTXT
    local lowerComando, tpDFe := Left(comando, hb_At('.', comando)-1)
-   local bytes, jsonText, jsonHash
+   local bytes, jsonText, jsonHash, aTokens, df
 
    ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
    ::nProt := 'CTeMonitor'
@@ -63,6 +68,12 @@ method new(txt_file, comando) class TReadTXT
    ::txtFile := txt_file
    ::text := hb_MemoRead(::txtFile)
    ::isRead := !Empty(::text)
+   ::cert_serial_number := ''
+   ::cert_company_name := ''
+   ::cert_cnpj := ''
+   ::cert_expiration_date := ''
+   ::cert_certifier := ''
+
    if ::isRead
       saveLog({'Conteúdo do arquivo lido: ', txt_file, hb_eol(), ::text})
       ::text := StrTran(::text, hb_eol(), '; ')
@@ -101,6 +112,26 @@ method new(txt_file, comando) class TReadTXT
                   ::xMotivo := comando + ': Sem resposta da Sefaz'
                   ::isValid := False
                endif
+            case ('obtercertificados' $ lowerComando)
+               ::text := StrTran(::text, "OK: ", "")
+               ::text := StrTran(::text, "; ", "")
+               aTokens := hb_ATokens(::text, "|")
+               ::cert_serial_number := AllTrim(aTokens[1])
+               ::cert_company_name := AllTrim(aTokens[2])
+               ::cert_cnpj := AllTrim(aTokens[3])
+               df := Set(_SET_DATEFORMAT, "dd/mm/yyyy")
+               ::cert_expiration_date := CToD(AllTrim(aTokens[4]))
+               Set(_SET_DATEFORMAT, df)
+               ::cert_certifier := AllTrim(aTokens[5])
+               if (::cert_expiration_date == Date())
+                  ::xMotivo := comando + ': Certificado Digital A1: ATENCAO!!! Expirando hoje ' + DToC(::cert_expiration_date)
+               elseif (::cert_expiration_date > Date())
+                  ::xMotivo := comando + ': Certificado Digital A1: Expira em ' + DToC(::cert_expiration_date)
+               else
+                  ::cStat := '291'
+                  ::isValid := False
+                  ::xMotivo := comando + ': Certificado Digital A1: ATENCAO!!! Expirado em ' + DToC(::cert_expiration_date)
+               endif
             otherwise
                ::xMotivo := comando + ': Erro de comando'
                ::isValid := False
@@ -115,6 +146,8 @@ method new(txt_file, comando) class TReadTXT
                ::xMotivo := tpDFe + ': Erro ao imprimir ' + 'DA' + Upper(tpDFe) + ' em PDF'
             case ('imprimirevento' $ lowerComando)
                ::xMotivo := tpDFe + ': Erro ao imprimir PDF do Evento'
+            case ('obtercertificados' $ lowerComando)
+               ::xMotivo := tpDFe + ': Erro ao obter informações do Certificado A1'
             otherwise
                ::xMotivo := comando + ': Erro'
          endcase
@@ -124,4 +157,5 @@ method new(txt_file, comando) class TReadTXT
    else
       saveLog({'Arquivo ', txt_file, ' não pode ser lido'})
    endif
+   // saveLog({"isValid: ", iif(::isValid, 'True', 'False')})
 return self

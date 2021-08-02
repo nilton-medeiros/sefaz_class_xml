@@ -3,9 +3,8 @@
 
 procedure saveLog(text)
    local path := Memvar->appData:systemPath + 'log\'
-   local meses := {'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'}
-   local curDate := DToC(Date())
-   local logFile := 'log' + hb_ULeft(DToS(Date()),6) + '.txt'
+   local date_format := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
+   local logFile := 'cte_log' + hb_ULeft(DToS(Date()),6) + '.txt'
    local h
    local t, msg := "", processos := ''
 
@@ -33,15 +32,17 @@ procedure saveLog(text)
       msg := text
    endif
    if !Empty(ProcName(3))
-      processos := ProcName(3) + '(' + hb_ntos(ProcLine(3)) + ')/'
+      processos := ProcName(3) + '(' + hb_ntos(ProcLine(3)) + ')->'
    endif
    if !Empty(ProcName(2))
-      processos += ProcName(2) + '(' + hb_ntos(ProcLine(2)) + ')/'
+      processos += ProcName(2) + '(' + hb_ntos(ProcLine(2)) + ')->'
    endif
 
    processos += ProcName(1) + '(' + hb_ntos(ProcLine(1)) + ')'
-   curDate := Left(curDate, 2) + '-' + meses[Month(Date())] + '-' + Right(curDate, 4)
-   msg := hb_eol() + curDate + ' ' + Time() + ' [' + processos + '] ' + msg
+
+   msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + '] ' + msg
+
+   SET(_SET_DATEFORMAT, date_format)
 
    FWrite(h, msg)
    FClose(h)
