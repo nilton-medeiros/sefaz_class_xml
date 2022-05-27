@@ -287,6 +287,8 @@ method Cancelar(xJust) class TACBrMonitor
       if ! returnStatus
          returnStatus := ::Consultar()
       endif
+   elseif ! Empty(::xMotivo)
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::tpAmb})
    endif
 return returnStatus
 
@@ -505,12 +507,15 @@ method read_return_xml(xmlRead, lidos, em_processamento) class TACBrMonitor
    saveLog('Lendo arquivo ' + xmlRead)
    xml := TReadXML():new(::ACBr:returnPath + xmlRead, ::DFe)
    if xml:isValidated
-      AAdd(::events, {'dhRecbto' => xml:dhRecbto, 'nProt' => xml:nProt, 'cStat' => xml:cStat, 'xMotivo' => xml:xMotivo + ' | Ambiente de ' + ::tpAmb})
       lidos++
       ::dhRecbto := xml:dhRecbto
+      if Empty(::dhRecbto) .or. Len(::dhRecbto) < 8
+         ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
+      endif
       ::cStat := xml:cStat
       ::xMotivo := xml:xMotivo
       ::nProt := xml:nProt
+      AAdd(::events, {'dhRecbto' => xml:dhRecbto, 'nProt' => xml:nProt, 'cStat' => xml:cStat, 'xMotivo' => xml:xMotivo + ' | Ambiente de ' + ::tpAmb})
       saveLog('Informações lidas: dhRecbto: [' + ::dhRecbto + '] cStat: [' + ::cStat + '] xMotivo: [' + ::xMotivo + '] nProt: [' + ::nProt + '] tpEvento: [' + xml:tpEvento + ']')
       switch xml:cStat
          case '100'

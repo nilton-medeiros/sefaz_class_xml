@@ -1414,8 +1414,13 @@ method criarCTeXML() class TCTe
 return True
 
 method addTagToWrite(hF, tag) class TCTe
+   local content
    if !empty(tag:value) .or. tag:required
-      FWrite(hF, '<' + tag:name + '>' + iif(Empty(tag:raw), tag:value, tag:raw) + '</' + tag:name + '>')
+      content := iif(Empty(tag:raw), tag:value, tag:raw)
+      if tag:eType = 'C'
+         content := removeAccentuation(content)
+      endif
+      FWrite(hF, '<' + tag:name + '>' + content + '</' + tag:name + '>')
    endif
 return Nil
 

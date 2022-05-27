@@ -71,7 +71,7 @@ method new(txt_file, comando) class TReadTXT
    ::cert_serial_number := ''
    ::cert_company_name := ''
    ::cert_cnpj := ''
-   ::cert_expiration_date := ''
+   ::cert_expiration_date := Date() + 365
    ::cert_certifier := ''
 
    if ::isRead
