@@ -778,11 +778,12 @@ method validateElement(e) class TCTe
          ::AAddError(e, "TAMANHO INVÁLIDO |Informado: "+hb_ntos(hmg_len(e:value))+ " |Aceito: |Min: "+hb_ntos(e:minLength)+" |Max: "+hb_ntos(e:maxLength))
          isValid := False
       endif
-      if !empty(e:restriction) .and. !(e:value $ e:restriction)
-         ::AAddError(e, "RESTRIÇÃO| Informado: "+e:value+" |Esperado: "+e:restriction)
-         isValid := False
+      if ! (e:eType == "A")
+         if !empty(e:restriction) .and. !(e:value $ e:restriction)
+            ::AAddError(e, "RESTRIÇÃO| Informado: "+e:value+" |Esperado: "+e:restriction)
+            isValid := False
+         endif
       endif
-
       if e:eType == "N" .and. aux_isAlpha(e:raw)
          ::AAddError(e, "CONTEÚDO DA TAG NÃO É NUMÉRICO")
          isValid := False
@@ -1414,8 +1415,13 @@ method criarCTeXML() class TCTe
 return True
 
 method addTagToWrite(hF, tag) class TCTe
+   local content
    if !empty(tag:value) .or. tag:required
-      FWrite(hF, '<' + tag:name + '>' + iif(Empty(tag:raw), tag:value, tag:raw) + '</' + tag:name + '>')
+      content := iif(Empty(tag:raw), tag:value, tag:raw)
+      if tag:eType = 'C'
+         content := removeAccentuation(content)
+      endif
+      FWrite(hF, '<' + tag:name + '>' + content + '</' + tag:name + '>')
    endif
 return Nil
 
