@@ -236,6 +236,9 @@ method Enviar() class TACBrMonitor
          ::pdfName := ''
       elseif (::cStat == '678')
          ::situacao := 'REJEITADO'  // 678|Rejeição: Uso Indevido - Vários acessos consecutivos de uma mesma requisição, Aguardar 60 minutos para nova requisição
+         if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
+            ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
+         endif
          AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => '678', 'xMotivo' => 'Rejeição: Uso Indevido | Ambiente de ' + ::tpAmb})
       endif
       returnStatus := True
@@ -288,6 +291,9 @@ method Cancelar(xJust) class TACBrMonitor
          returnStatus := ::Consultar()
       endif
    elseif ! Empty(::xMotivo)
+      if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
+         ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
+      endif
       AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::tpAmb})
    endif
 return returnStatus
@@ -351,6 +357,9 @@ method imprimirPDF() class TACBrMonitor
    if Empty(::xmlName)
       saveLog('Arquivo ::xmlName vazio, não será possível gerar o pdf')
       return False
+   endif
+   if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
+      ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
    endif
    if (::situacao == 'CANCELADO')
       // Cancelado CTe/MDFe
@@ -834,6 +843,10 @@ return Nil
 method foram_lidos(lidos) class TACBrMonitor
    local nRet := 0
    if lidos
+      if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
+         ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
+      endif
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::tpAmb})
       saveLog({'Status do XML: ', ::situacao, ' |Motivo: ', ::xMotivo})
    else
       saveLog('Nenhum arquivo foi lido de retorno de XMLs, verificando retorno em TXT...')
