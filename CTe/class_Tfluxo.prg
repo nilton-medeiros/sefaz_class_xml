@@ -74,7 +74,7 @@ end class
 
 method new() class Tpass
 	::value := "Tpass"
-	::xPass := Telement():new({'name' => "xPass", 'documentation' => "Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Passagem", 'required' => False, 'minLength' => 1, 'maxLength' => 15})
+	::xPass := Telement():new({'name' => "xPass", 'documentation' => "Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Passagem", 'value' => "OACI", 'required' => False, 'minLength' => 1, 'maxLength' => 15})
 	::xDest := Telement():new({'name' => "xDest", 'documentation' => "Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Destino", 'required' => False, 'minLength' => 1, 'maxLength' => 60})
 	::xRota := Telement():new({'name' => "xRota", 'documentation' => "Código da Rota de Entrega", 'required' => False, 'minLength' => 1, 'maxLength' => 10})
 return self

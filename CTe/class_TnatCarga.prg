@@ -48,14 +48,15 @@ method new() class TnatCarga
    ::documentation := "natCarga | Natureza da carga"
    ::value := "TnatCarga"
    ::xDime := Telement():new({'name' => "xDime", 'documentation' => "Dimensão", 'required' => False, 'minLength' => 4, 'maxLength' => 14})
-   ::cInfManu := Telement():new({'name' => "cInfManu", 'documentation' => "Informações de manuseio", 'required' => False,;
-                                 'value' => {}, 'minLength' => 0, 'maxLength' => 99999,;
-                                 'restriction' => "01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|99", 'type' => "A"})
+   ::cInfManu := {}
 return self
 
 method addcInfManu(infManu) class TnatCarga
-   local add_status := (infManu $ ::cInfManu:restriction)
+   local add_status := (infManu $ "01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|99")
+   local oInfManu
    if (add_status)
-      AAdd(::cInfManu:value, infManu)
+      oInfManu := Telement():new({'name' => "cInfManu", 'documentation' => "Informações de manuseio", 'required' => False,;
+         'value' => infManu, 'minLength' => 2, 'restriction' => "01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|99", 'eType' => "C"})
+      AAdd(::cInfManu, oInfManu)
    endif
 return add_status

@@ -129,7 +129,7 @@ Return (key)
 method validarCTe() class TCTe
    local keyGroup := False
    local tomaCNPJ := ""
-   local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15
+   local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16
    local eda, idta, dtap, dtae
 
    with object ::infCte
@@ -589,7 +589,9 @@ method validarCTe() class TCTe
                   ::validateElement(:nOCA)
                   ::validateElement(:dPrevAereo)
                   ::validateElement(:natCarga:xDime)
-                  ::validateElement(:natCarga:cInfManu)
+                  for each v16 in :natCarga:cInfManu
+                     ::validateElement(v16)
+                  next
                   ::validateElement(:tarifa:CL)
                   ::validateElement(:tarifa:cTar)
                   ::validateElement(:tarifa:vTar)
@@ -758,6 +760,12 @@ return nil
 
 method validateElement(e) class TCTe
    local isValid := True
+
+   if ! (ValType(e) == 'O')
+      msgDebugInfo({'Element type: ', ValType(e), ' | conteúdo: ', iif(ValType(e) $ 'CN', e, '?')})
+      saveLog('Tag não é um elemento, é do tipo: ' + ValType(e) + ' | conteúdo: ' + iif(ValType(e) == 'C', e, iif(ValType(e) == 'N', hb_ntos(e), '?')))
+   endif
+
    if e:eType == "C" .and. !Empty(e:value)
       if Empty(e:raw)
          e:raw := removeAccentuation(e:value)
@@ -778,11 +786,12 @@ method validateElement(e) class TCTe
          ::AAddError(e, "TAMANHO INVÁLIDO |Informado: "+hb_ntos(hmg_len(e:value))+ " |Aceito: |Min: "+hb_ntos(e:minLength)+" |Max: "+hb_ntos(e:maxLength))
          isValid := False
       endif
-      if !empty(e:restriction) .and. !(e:value $ e:restriction)
-         ::AAddError(e, "RESTRIÇÃO| Informado: "+e:value+" |Esperado: "+e:restriction)
-         isValid := False
+      if ! (e:eType == "A")
+         if !empty(e:restriction) .and. !(e:value $ e:restriction)
+            ::AAddError(e, "RESTRIÇÃO| Informado: "+e:value+" |Esperado: "+e:restriction)
+            isValid := False
+         endif
       endif
-
       if e:eType == "N" .and. aux_isAlpha(e:raw)
          ::AAddError(e, "CONTEÚDO DA TAG NÃO É NUMÉRICO")
          isValid := False
@@ -798,7 +807,6 @@ method validateElement(e) class TCTe
       ::AAddError(e, "TAG REQUERIDA - CONTEÚDO NÃO PODE SER VAZIO/NÃO INFORMADO")
       isValid := False
    endif
-
 return isValid
 
 method validateClient(c) class TCTe
@@ -948,16 +956,15 @@ method criarCTeXML() class TCTe
                      ::addTagToWrite(h, :xCaracSer)
                      ::addTagToWrite(h, :xEmi)
                      if :fluxo:submit
-                        FWrite(h, '<fluxo>')
-                           ::addTagToWrite(h, :xOrig)
-                           for each p1 in :pass:value
+                        FWrite(h, '<fluxo>') // 63. Previsão do fluxo da carga [Preenchimento obrigatório para o modal aéreo]
+                           ::addTagToWrite(h, :fluxo:xOrig)
+                           for each p1 in :fluxo:pass
                               FWrite(h, '<pass>')
-                                 ::addTagToWrite(h, :p1:xPass)
-                                 ::addTagToWrite(h, :p1:xDest)
-                                 ::addTagToWrite(h, :p1:xRota)
+                                 ::addTagToWrite(h, p1:xPass)
+                                 ::addTagToWrite(h, p1:xDest)
+                                 ::addTagToWrite(h, p1:xRota)
                               FWrite(h, '</pass>')
                            next
-                           ::addTagToWrite(h, :xOrig)
                         FWrite(h, '</fluxo>')
                      endif
                      if :Entrega:submit
@@ -1340,10 +1347,8 @@ method criarCTeXML() class TCTe
                               ::addTagToWrite(h, :dPrevAereo)
                               FWrite(h, '<natCarga>')
                                  ::addTagToWrite(h, :natCarga:xDime)
-                                 for each p10 in :natCarga:cInfManu:value
-                                    FWrite(h, '<cInfManu>')
+                                 for each p10 in :natCarga:cInfManu
                                     ::addTagToWrite(h, p10)
-                                    FWrite(h, '</cInfManu>')
                                  next
                               FWrite(h, '</natCarga>')
                               FWrite(h, '<tarifa>')
@@ -1351,9 +1356,9 @@ method criarCTeXML() class TCTe
                                  ::addTagToWrite(h, :tarifa:cTar)
                                  ::addTagToWrite(h, :tarifa:vTar)
                               FWrite(h, '</tarifa>')
-                              if :peri:submit
+//                            if :peri:required
                                  // Tag não implementado no TMS.CLOUD
-                              endif
+//                            endif
                            endwith
                         FWrite(h, '</aereo>')
                      endif
@@ -1410,11 +1415,13 @@ method criarCTeXML() class TCTe
       FWrite(h, '</CTe>')
    endwith
    FClose(h)
-
 return True
 
 method addTagToWrite(hF, tag) class TCTe
    local content
+   if ! (ValType(tag) == 'O')
+      msgDebugInfo({'tag type: ', ValType(tag), ' | conteúdo: ', iif(ValType(tag) $ 'CN', tag, 'Não é C ou N')})
+   endif
    if !empty(tag:value) .or. tag:required
       content := iif(Empty(tag:raw), tag:value, tag:raw)
       if tag:eType = 'C'

@@ -36,16 +36,15 @@
 
 
 class Taereo
-	data documentation init "aereo | Informações do modal Aéreo" READONLY
-	data submit init True
-	data value init "Taereo" READONLY
-	data nMinu init Telement():new({'name' => "nMinu", 'documentation' => "Número da Minuta", 'required' => False, 'minLength' => 9, 'type' => "N"})
-	data nOCA init Telement():new({'name' => "nOCA", 'documentation' => "Número Operacional do Conhecimento Aéreo", 'required' => False, 'minLength' => 11, 'type' => "N"})
-	data dPrevAereo init Telement():new({'name' => "dPrevAereo", 'documentation' => "Data prevista da entrega", 'minLength' => 10, 'type' => "D"})
-	data natCarga init TnatCarga():new()
-	data tarifa init Ttarifa():new()
-	data peri init Telement():new({'name' => "peri", 'documentation' => "Preenchido quando for transporte de produtos classificados pela ONU como perigosos.",;
-												 'value' => {}, 'minLength' => 0, 'maxLength' => 99999, 'type' => "A"})
+	data documentation READONLY
+	data submit
+	data value READONLY
+	data nMinu
+	data nOCA
+	data dPrevAereo
+	data natCarga
+	data tarifa
+	data peri
 
 	method new() constructor
 	method addperi(peri)
@@ -53,6 +52,9 @@ class Taereo
 end class
 
 method new() class Taereo
+	::documentation := "aereo | Informações do modal Aéreo"
+	::submit := False
+	::value := "Taereo"
 	::nMinu := Telement():new({'name' => "nMinu", 'documentation' => "Número da Minuta", 'required' => False, 'minLength' => 9, 'type' => "N"})
 	::nOCA := Telement():new({'name' => "nOCA", 'documentation' => "Número Operacional do Conhecimento Aéreo", 'required' => False, 'minLength' => 11, 'type' => "N"})
 	::dPrevAereo := Telement():new({'name' => "dPrevAereo", 'documentation' => "Data prevista da entrega", 'minLength' => 10, 'type' => "D"})

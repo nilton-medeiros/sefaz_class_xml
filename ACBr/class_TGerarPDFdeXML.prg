@@ -178,6 +178,7 @@ method new(xmlName, outPath, systemPath, chDFe) class TGerarPDFdeXML
          pdf:nCT := xml:getSubNode('nCT')
          pdf:dhEmi := ::dhXMLtoPDF(xml:getSubNode('dhEmi'))
          pdf:cfop := xml:getSubNode('CFOP') + ' - ' + xml:getSubNode('natOp')
+         pdf:modal := iif(xml:getSubNode('modal') == '01', 'RODOVIÁRIO', 'AÉREO')
 
          // Emitente
          xml:getNode('emit')
@@ -456,10 +457,12 @@ method new(xmlName, outPath, systemPath, chDFe) class TGerarPDFdeXML
                      endif
                   next
 
-                  // Dados Específicos do Modal Rodoviário
-                  pdf:setFont({'size' => 7, 'bold' => True, 'position' => 'LEFT'})
-                  pdf:printText(xml:getNode('RNTRC'), 278, 3)
-                  pdf:setFont({'size' => 6, 'position' => 'LEFT', 'bold' => False})
+                  if (pdf:modal == 'RODOVIÁRIO')
+                     // Dados Específicos do Modal Rodoviário
+                     pdf:setFont({'size' => 7, 'bold' => True, 'position' => 'LEFT'})
+                     pdf:printText(xml:getNode('RNTRC'), 278, 3)
+                     pdf:setFont({'size' => 6, 'position' => 'LEFT', 'bold' => False})
+                  endif
                   // ObsCont
                   node := xml:getNode('ObsCont')
                   if !Empty(node)

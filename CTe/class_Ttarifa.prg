@@ -52,6 +52,8 @@ method new() class Ttarifa
 															"G - Tarifa Geral;"+CRLF+;
 															"E - Tarifa Específica",;
 											  'minLength' => 1, 'restriction' => "M|G|E"})
-	::cTar := Telement():new({'name' => "cTar", 'documentation' => "Código da Tarifa"+CRLF+"Deverão ser incluídos os códigos de três dígitos, correspondentes à tarifa.", 'required' => False, 'maxLength' => 4})
+	::cTar := Telement():new({'name' => "cTar", 'documentation' => "Código da Tarifa"+CRLF+"Deverão ser incluídos os códigos de três dígitos, correspondentes à tarifa.",;
+             'required' => False, 'maxLength' => 4,;
+             'restriction' => "001|010|020|032|070|071|072|080|140|180|200|210|240"})
 	::vTar := Telement():new({'name' => "vTar", 'documentation' => "Valor da Tarifa", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
 return self

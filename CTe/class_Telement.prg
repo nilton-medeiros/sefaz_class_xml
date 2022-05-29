@@ -43,7 +43,7 @@ class Telement
 	data minLength READONLY
 	data maxLength READONLY
 	data restriction READONLY
-	data required READONLY
+	data required
 	data eType READONLY
 	method new(p) constructor
 	method setRequired(isRequired)
