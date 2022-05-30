@@ -34,7 +34,7 @@
 #include <hmg.ch>
 #include "hbclass.ch"
 
-
+// Atualizado em 2022-05-30 20:00 [Inclusão TAG CRT]
 class Temit
 	data documentation
 	data value READONLY
@@ -46,6 +46,7 @@ class Temit
 	data xNome
 	data xFant
 	data enderEmit
+	data CRT
 	data fone
 	data email
 	method new() constructor
@@ -62,6 +63,7 @@ method new(isCTe) class Temit
 	::xNome := Telement():new({'name' => "xNome", 'documentation' => "Razão Social ou nome do emitente", 'minLength' => 2, 'maxLength' => 60})
 	::xFant := Telement():new({'name' => "xFant", 'documentation' => "Nome Fantasia", 'minLength' => 2, 'maxLength' => 60, 'required' => False})
 	::enderEmit := TEndereco():new({'tag' => "enderEmit", 'nome' => "emitente"})
+	::CRT := Telement():new({'name' => "CRT", 'documentation' => "Código do Regime Tributário", 'minLength' => 1, 'required' => False, 'restriction' => "1|2|3", 'type' => "N"})
 	::fone := Telement():new({'name' => "fone", 'documentation' => "Telefone do Emitente", 'minLength' => 6, 'maxLength' => 14, 'required' => False, 'type' => "N"})
 	::email := Telement():new({'name' => "email", 'documentation' => "Endereço de E-mail", 'minLength' => 6, 'maxLength' => 60, 'required' => False})
 return self

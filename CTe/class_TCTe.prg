@@ -44,7 +44,7 @@
 
 */
 
-
+// Atualizado em 2022-05-30 20:00 [Inclusão TAG CRT]
 class TCTe
    /*
    class: TCTe
@@ -306,6 +306,7 @@ method validarCTe() class TCTe
       ::validateElement(:enderEmit:cMun)
       ::validateElement(:enderEmit:CEP)
       ::validateElement(:enderEmit:UF)
+      ::validateElement(:CRT)
       ::validateElement(:fone)
    endwith
 
@@ -1039,6 +1040,7 @@ method criarCTeXML() class TCTe
                      ::addTagToWrite(h, :enderEmit:UF)
                      ::addTagToWrite(h, :fone)
                   FWrite(h, '</enderEmit>')
+                  ::addTagToWrite(h, :CRT)
                FWrite(h, '</emit>')
             endwith
             if :rem:submit
@@ -1420,6 +1422,7 @@ return True
 method addTagToWrite(hF, tag) class TCTe
    local content
    if ! (ValType(tag) == 'O')
+      saveLog({'Erro, tag não é um elemento (objeto) - tag type: ', ValType(tag), ' | conteúdo: ', iif(ValType(tag) $ 'CN', tag, 'Não é C ou N')})
       msgDebugInfo({'tag type: ', ValType(tag), ' | conteúdo: ', iif(ValType(tag) $ 'CN', tag, 'Não é C ou N')})
    endif
    if !empty(tag:value) .or. tag:required
