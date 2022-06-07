@@ -42,7 +42,7 @@ class TACBrMonitor
    data DFe protected
    data chDFe readonly
    data dfe_id readonly
-   data tpAmb readonly
+   data xTpAmb readonly
    data emitCNPJ protected
    data dhEmi protected
    data situacao
@@ -135,7 +135,7 @@ method new(params) class TACBrMonitor
          hb_DirBuild(::copyXMLPath)
       endif
    endif
-   ::tpAmb := iif(params['tpAmb'] == '2', 'HOMOLOGAÇÃO', 'PRODUÇÃO')
+   ::xTpAmb := iif(params['tpAmb'] == 2, 'HOMOLOGAÇÃO', 'PRODUÇÃO')
    ::inFile := ::ACBr:inputPath + ::chDFe + '.txt'
    ::outFile := ::ACBr:outputPath + ::chDFe + '-resp.txt'
    ::tmpFile := ::systemPath + 'tmp\' + ::chDFe + '-resp.txt'
@@ -165,7 +165,7 @@ method new(params) class TACBrMonitor
       hb_DirBuild(::pdfAutPath)
    endif
    if !::serviceStatus
-      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'ACBrMonitor não está Ativo ou Instalado | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'ACBrMonitor não está Ativo ou Instalado | Ambiente de ' + ::xTpAmb})
    endif
    ::certificate_is_valid := False
 return self
@@ -239,7 +239,7 @@ method Enviar() class TACBrMonitor
          if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
             ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
          endif
-         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => '678', 'xMotivo' => 'Rejeição: Uso Indevido | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => '678', 'xMotivo' => 'Rejeição: Uso Indevido | Ambiente de ' + ::xTpAmb})
       endif
       returnStatus := True
    else
@@ -294,7 +294,7 @@ method Cancelar(xJust) class TACBrMonitor
       if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
          ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
       endif
-      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::xTpAmb})
    endif
 return returnStatus
 
@@ -368,17 +368,17 @@ method imprimirPDF() class TACBrMonitor
       endif
       if Empty(::xmlCancel)
          saveLog('Arquivo ::xmlCancel vazio, não será possível gerar o pdf')
-         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::xTpAmb})
       elseif !hb_FileExists(::xmlCancel)
          saveLog('Arquivo XML do ' + ::DFe + ' cancelado não encontrado: ' + ::xmlCancel)
-         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::xTpAmb})
       elseif hb_FileExists(::xmlName)
          ::command := ::DFe + '.ImprimirEventoPDF("' + ::xmlCancel + '", "' +  ::xmlName + '")'
          ::submit()
          pdfStatus := ::getReturnTXT()
       else
          saveLog('Arquivo XML do ' + ::DFe + ' cancelado não encontrado: ' + ::xmlName)
-         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF de Cancelamento | Ambiente de ' + ::xTpAmb})
       endif
    elseif (Lower(::DFe) == 'mdfe')
       if (::situacao == 'ENCERRADO')
@@ -392,7 +392,7 @@ method imprimirPDF() class TACBrMonitor
             else
                saveLog('XML de autorização não encontrado para imprimir PDF de Encerramento: ' + ::xmlMDFe)
                ::command := ''
-               AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'XML de autorização não encontrado para imprimir PDF de Encerramento | Ambiente de ' + ::tpAmb})
+               AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'XML de autorização não encontrado para imprimir PDF de Encerramento | Ambiente de ' + ::xTpAmb})
             endif
          endif
       else
@@ -407,7 +407,7 @@ method imprimirPDF() class TACBrMonitor
       infPDF := TGerarPDFdeXML():new(::xmlName, ::pdfAutPath, ::systemPath, ::chDFe)
       if (pdfStatus := infPDF:ok)
          ::pdfName := infPDF:pdfName
-         AAdd(::events, {'dhRecbto' => infPDF:dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'PDF do DACTE gerado com sucesso | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => infPDF:dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'PDF do DACTE gerado com sucesso | Ambiente de ' + ::xTpAmb})
          saveLog('PDF do DA' + Upper(::DFe) + ' gerado com sucesso. Arquivo: ' + ::pdfName)
       elseif infPDF:canceladoStatus
          ::situacao := 'CANCELADO'
@@ -419,7 +419,7 @@ method imprimirPDF() class TACBrMonitor
          ::submit()
          pdfStatus := ::getReturnTXT()
       else
-         AAdd(::events, {'dhRecbto' => infPDF:dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF do DACTE | Ambiente de ' + ::tpAmb})
+         AAdd(::events, {'dhRecbto' => infPDF:dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Erro ao gerar PDF do DACTE | Ambiente de ' + ::xTpAmb})
          saveLog('Erro ao gerar o PDF do DA' + Upper(::DFe) + '. Arquivo: ' + ::pdfName)
       endif
    endif
@@ -524,7 +524,7 @@ method read_return_xml(xmlRead, lidos, em_processamento) class TACBrMonitor
       ::cStat := xml:cStat
       ::xMotivo := xml:xMotivo
       ::nProt := xml:nProt
-      AAdd(::events, {'dhRecbto' => xml:dhRecbto, 'nProt' => xml:nProt, 'cStat' => xml:cStat, 'xMotivo' => xml:xMotivo + ' | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => xml:dhRecbto, 'nProt' => xml:nProt, 'cStat' => xml:cStat, 'xMotivo' => xml:xMotivo + ' | Ambiente de ' + ::xTpAmb})
       saveLog('Informações lidas: dhRecbto: [' + ::dhRecbto + '] cStat: [' + ::cStat + '] xMotivo: [' + ::xMotivo + '] nProt: [' + ::nProt + '] tpEvento: [' + xml:tpEvento + ']')
       switch xml:cStat
          case '100'
@@ -593,7 +593,7 @@ method read_return_xml(xmlRead, lidos, em_processamento) class TACBrMonitor
       saveLog({'Arquivo de retorno xml lido com sucesso: ', xmlRead})
    else
       saveLog({'Arquivo de retorno xml inválido: ', xmlRead, hb_eol(), 'isRead: ', xml:isRead, ' |dhRecbto: ', xml:dhRecbto, ' |nProt: ', xml:nProt, ' |cStat: ', xml:cStat, ' |xMotivo: ', xml:xMotivo})
-      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Arquivo de retorno xml inválido, ver log CTeMonitor! | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'Arquivo de retorno xml inválido, ver log CTeMonitor! | Ambiente de ' + ::xTpAmb})
    endif
 
    hb_vfMoveFile(::ACBr:returnPath + xmlRead, ::ACBr:returnPath + 'lidos\' + xmlRead)
@@ -663,9 +663,9 @@ method getReturnTXT() class TACBrMonitor
             ::cert_certifier := txt:cert_certifier
             days_lefts := ::cert_expiration_date - Date()
             if (days_lefts < 30)
-               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - No.Serie: ' + txt:cert_serial_number + ' | Ambiente de ' + ::tpAmb})
-               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Empresa: ' + txt:cert_company_name + ' CNPJ: ' + txt:cert_cnpj + ' | Ambiente de ' + ::tpAmb})
-               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Certificadora: ' + txt:cert_certifier + ' | Ambiente de ' + ::tpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - No.Serie: ' + txt:cert_serial_number + ' | Ambiente de ' + ::xTpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Empresa: ' + txt:cert_company_name + ' CNPJ: ' + txt:cert_cnpj + ' | Ambiente de ' + ::xTpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - Certificadora: ' + txt:cert_certifier + ' | Ambiente de ' + ::xTpAmb})
                if (days_lefts == 0)
                   msg_expiration := 'Expirando hoje: ' + DToC(::cert_expiration_date)
                elseif (days_lefts < 0)
@@ -673,18 +673,18 @@ method getReturnTXT() class TACBrMonitor
                else
                   msg_expiration := 'Expira em ' + hb_ntos(days_lefts) + ' dias!'
                endif
-               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - ' + msg_expiration + ' | Ambiente de ' + ::tpAmb})
+               AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => 'Certificado Digital - ' + msg_expiration + ' | Ambiente de ' + ::xTpAmb})
                saveLog({'Certificado Digital:', hb_eol(), '  No.Série: ', ::cert_serial_number , hb_eol(), '  Empresa: ', ::cert_company_name + ' CNPJ: ' + ::cert_cnpj, hb_eol(), '  Cerificadora: ', ::cert_certifier, '  Validade: ' + msg_expiration})
             endif
          endif
          txtStatus := txt:isValid
       endif
       saveLog({'Resposta: ', txt:xMotivo, hb_eol(), 'retorno: ', txt:text})
-      AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => txt:xMotivo + ' | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => txt:dhRecbto, 'nProt' => txt:nProt, 'cStat' => txt:cStat, 'xMotivo' => txt:xMotivo + ' | Ambiente de ' + ::xTpAmb})
       hb_vfMoveFile( ::outFile, ::tmpFile)
    else
       saveLog({'ACBrMonitor não responde (timeout)', hb_eol(), 'Arquivo esperado: ', ::outFile})
-      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'ACBrMonitor não responde (timeout)! Ver log CTeMonitor | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => 'CTeMonitor', 'cStat' => '000', 'xMotivo' => 'ACBrMonitor não responde (timeout)! Ver log CTeMonitor | Ambiente de ' + ::xTpAmb})
    endif
 
 return txtStatus
@@ -846,7 +846,7 @@ method foram_lidos(lidos) class TACBrMonitor
       if Empty(::dhRecbto) .or. (::dhRecbto == "0000-00-00 00:00:00")
          ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
       endif
-      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::tpAmb})
+      AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::xTpAmb})
       saveLog({'Status do XML: ', ::situacao, ' |Motivo: ', ::xMotivo})
    else
       saveLog('Nenhum arquivo foi lido de retorno de XMLs, verificando retorno em TXT...')
