@@ -763,8 +763,8 @@ method validateElement(e) class TCTe
    local isValid := True
 
    if ! (ValType(e) == 'O')
-      msgDebugInfo({'Element type: ', ValType(e), ' | conteúdo: ', iif(ValType(e) $ 'CN', e, '?')})
       saveLog('Tag não é um elemento, é do tipo: ' + ValType(e) + ' | conteúdo: ' + iif(ValType(e) == 'C', e, iif(ValType(e) == 'N', hb_ntos(e), '?')))
+      msgDebugInfo({'Element type: ', ValType(e), ' | conteúdo: ', iif(ValType(e) $ 'CN', e, '?')})
    endif
 
    if e:eType == "C" .and. !Empty(e:value)

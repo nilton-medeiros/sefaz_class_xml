@@ -36,6 +36,7 @@
 #include <fileio.ch>
 #include "Directry.ch"
 
+// Atualizado: 2022-06-07 15:20 | Trocado propriedade tpAmb para xTpAmb class TACBrMonitor
 
 class TACBrMonitor
    data ACBr protected
@@ -135,7 +136,7 @@ method new(params) class TACBrMonitor
          hb_DirBuild(::copyXMLPath)
       endif
    endif
-   ::xTpAmb := iif(params['tpAmb'] == 2, 'HOMOLOGAÇÃO', 'PRODUÇÃO')
+   ::xTpAmb := iif(params['tpAmb'] == '2', 'HOMOLOGAÇÃO', 'PRODUÇÃO')
    ::inFile := ::ACBr:inputPath + ::chDFe + '.txt'
    ::outFile := ::ACBr:outputPath + ::chDFe + '-resp.txt'
    ::tmpFile := ::systemPath + 'tmp\' + ::chDFe + '-resp.txt'
