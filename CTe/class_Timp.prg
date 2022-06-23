@@ -38,6 +38,7 @@
 class Timp
 	data documentation
 	data value READONLY
+	data name
 	// ICMS: Informações relativas ao ICMS
 	data ICMS00
 	data ICMS20
@@ -65,7 +66,7 @@ end class
 
 method new() class Timp
 	::documentation := "imp | Informações relativas aos Impostos"
-	::value := "Timp"
+	::name := "Timp"
 	::ICMS00 := TICMS00():new()
 	::ICMS20 := TICMS20():new()
 	::ICMS45 := TICMS45():new()

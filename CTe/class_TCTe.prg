@@ -44,7 +44,7 @@
 
 */
 
-// Atualizado em 2022-05-30 20:00 [Inclusão TAG CRT]
+// Atualizado em 2022-06-23 16:45
 class TCTe
    /*
    class: TCTe
