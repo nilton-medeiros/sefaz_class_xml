@@ -270,7 +270,7 @@ method validarCTe() class TCTe
       ::validateElement(:Entrega:hFim)
 
       if (::infCte:ide:modal:value == "02") .and. (:Entrega:tpPer:value == "0")
-         ::AAddError(:Entrada:tpPer, "A OPÇÃO '0 - Sem data definida' É PROIBIDA PARA O MODAL AÉREO")
+         ::AAddError(:Entrega:tpPer, "A OPÇÃO '0 - Sem data definida' É PROIBIDA PARA O MODAL AÉREO")
       endif
 
       ::validateElement(:origCalc)
