@@ -84,10 +84,10 @@ method new() class Timp
 	::pDIFAL := '0'
 	::vDIFAL := '0'
 	::vBCUFFim := Telement():new({'name' => "vBCUFFim", 'documentation' => "Valor da BC do ICMS na UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
-	::pFCPUFFim := Telement():new({'name' => "pFCPUFFim", 'documentation' => "Percentual do ICMS relativo ao Fundo de Combate à pobreza (FCP) na UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N"})
-	::pICMSUFFim := Telement():new({'name' => "pICMSUFFim", 'documentation' => "Alíquota interna da UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N"})
-	::pICMSInter := Telement():new({'name' => "pICMSInter", 'documentation' => "Alíquota interestadual das UF envolvidas", 'minLength' => 4, 'maxLength' => 6, 'type' => "N"})
-	::vFCPUFFim := Telement():new({'name' => "vFCPUFFim", 'documentation' => "Valor do ICMS relativo ao Fundo de Combate á Pobreza (FCP) da UF de término da prestação", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
-	::vICMSUFFim := Telement():new({'name' => "vICMSUFFim", 'documentation' => "Valor do ICMS de partilha para a UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
-	::vICMSUFIni := Telement():new({'name' => "vICMSUFIni", 'documentation' => "Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
+	::pFCPUFFim := Telement():new({'name' => "pFCPUFFim", 'documentation' => "Percentual do ICMS relativo ao Fundo de Combate à pobreza (FCP) na UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N", 'value' => "0.0"})
+	::pICMSUFFim := Telement():new({'name' => "pICMSUFFim", 'documentation' => "Alíquota interna da UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N", 'value' => "0.0"})
+	::pICMSInter := Telement():new({'name' => "pICMSInter", 'documentation' => "Alíquota interestadual das UF envolvidas", 'minLength' => 4, 'maxLength' => 6, 'type' => "N", 'value' => "0.0"})
+	::vFCPUFFim := Telement():new({'name' => "vFCPUFFim", 'documentation' => "Valor do ICMS relativo ao Fundo de Combate á Pobreza (FCP) da UF de término da prestação", 'minLength' => 4, 'maxLength' => 16, 'type' => "N", 'value' => "0.0"})
+	::vICMSUFFim := Telement():new({'name' => "vICMSUFFim", 'documentation' => "Valor do ICMS de partilha para a UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N", 'value' => "0.0"})
+	::vICMSUFIni := Telement():new({'name' => "vICMSUFIni", 'documentation' => "Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N", 'value' => "0.0"})
 return self
