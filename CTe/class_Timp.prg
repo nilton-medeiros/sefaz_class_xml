@@ -53,6 +53,9 @@ class Timp
 	* ICMSUFFim: Informações do ICMS de partilha com a UF de término do serviço de transporte na operação interestadual
 	* Grupo a ser informado nas prestações interestaduais para consumidor final, não contribuinte do ICMS
 	*/
+	data tem_difal
+	data pDIFAL
+	data vDIFAL
 	data ICMSUFFim
 	data vBCUFFim
 	data pFCPUFFim
@@ -76,7 +79,10 @@ method new() class Timp
 	::ICMSSN := TICMSSN():new()
 	::vTotTrib := Telement():new({'name' => "vTotTrib", 'documentation' => "Valor Total dos Tributos", 'required' => False, 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
 	::infAdFisco := Telement():new({'name' => "infAdFisco", 'documentation' => "Informações adicionais de interesse do Fisco", 'required' => False, 'minLength' => 1, 'maxLength' => 2000, 'type' => "N"})
+	::tem_difal := False
 	::ICMSUFFim := False
+	::pDIFAL := '0'
+	::vDIFAL := '0'
 	::vBCUFFim := Telement():new({'name' => "vBCUFFim", 'documentation' => "Valor da BC do ICMS na UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 16, 'type' => "N"})
 	::pFCPUFFim := Telement():new({'name' => "pFCPUFFim", 'documentation' => "Percentual do ICMS relativo ao Fundo de Combate à pobreza (FCP) na UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N"})
 	::pICMSUFFim := Telement():new({'name' => "pICMSUFFim", 'documentation' => "Alíquota interna da UF de término da prestação do serviço de transporte", 'minLength' => 4, 'maxLength' => 6, 'type' => "N"})
