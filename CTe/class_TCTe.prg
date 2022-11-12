@@ -443,7 +443,8 @@ method validarCTe() class TCTe
          !(::infCte:ide:UFIni:value == ::infCte:ide:UFFim:value) .and.;
          (::infCte:ide:tpServ:value == '0') .and.;
          (::infCte:dest:contribuinte_ICMS == '0') .and.;
-         (::infCte:ide:toma3:toma:value == '3')
+         (::infCte:ide:toma3:toma:value == '3') .and.;
+         ! ::infCte:imp:ICMSSN:submit
          // Grupo a ser informado nas prestações interestaduais para consumidor final, não contribuinte do ICMS
          :ICMSUFFim := True
          ::validateElement(:vBCUFFim)
