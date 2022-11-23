@@ -15,7 +15,7 @@ GOTO fim
 echo.
 copy libsistrom_ACBrMonitor.a C:\hmg.3.4.4\lib /Y
 echo.
-echo		Biblioteca criada com sucesso!
+echo		Biblioteca "libsistrom_ACBrMonitor.a" criada com sucesso!
 echo.
 :fim
 echo.

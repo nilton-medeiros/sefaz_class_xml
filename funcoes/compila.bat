@@ -15,7 +15,7 @@ GOTO fim
 echo.
 copy libsistrom_xmlFunctions.a C:\hmg.3.4.4\lib /Y
 echo.
-echo		Biblioteca criada com sucesso!
+echo		Biblioteca "libsistrom_xmlFunctions.a" criada com sucesso!
 echo.
 :fim
 echo.
