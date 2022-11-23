@@ -494,7 +494,7 @@ method new(xmlName, outPath, systemPath, chDFe) class TGerarPDFdeXML
          ::ok := hb_FileExists(pdf:getNamePDF())
          if ::ok
             ::pdfName := pdf:getNamePDF()
-            ::dhRecbto := pdf:getDateCreated()
+            //::dhRecbto := pdf:getDateCreated()
          else
             saveLog({'Erro ao gerar PDF', hb_eol(), 'pdf: ' + pdf:getNamePDF()})
          endif
