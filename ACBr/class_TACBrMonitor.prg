@@ -91,7 +91,7 @@ class TACBrMonitor
    method Inutilizar()
    method imprimirPDF()
    method imprimirInutilizacaoPDF()
-   method submit() protected
+   method submit(delXmlStatus) protected
    method getReturnXML() protected
    method getReturnTXT() protected
    method read_return_xml() protected
@@ -223,7 +223,7 @@ method Enviar() class TACBrMonitor
                ::copyFromTo(::xmlName, destinationFile)
             endif
          endif
-      elseif (::cStat $ '204|205|218')
+      elseif (::cStat $ '204|205|218|539')
             /* Para os retornos abaixo, atualiza o status do CTe no TMS.Cloud
              * 204|Rejeição: Duplicidade de CT-e/MDF-e
              * 205|Rejeição: CT-e está denegado na base de dados da SEFAZ
