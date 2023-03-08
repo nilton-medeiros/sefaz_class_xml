@@ -89,7 +89,7 @@ method new(xmlName, outPath, systemPath, chDFe) class TGerarPDFdeXML
                   else
                      tpDoc := '01 - NF Modelo 01/1A e Avulsa'
                   endif
-                  AAdd(docsOriginarios, {'tpDoc' => tpDoc, 'descricao' => pdf:rem:doc, 'nDoc' => nDoc})
+                  AAdd(docsOriginarios, {'tpDoc' => tpDoc, 'descricao' => '', 'nDoc' => nDoc})
                   node := xml:nextNode()
                enddo
             else
