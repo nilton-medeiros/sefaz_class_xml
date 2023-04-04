@@ -34,7 +34,7 @@
 #include <hmg.ch>
 #include "hbclass.ch"
 
-
+// Classe será removida na versão 4.00 do CT-e
 class TtomaICMS
    data documentation
    data value

@@ -642,7 +642,12 @@ method validarCTe() class TCTe
             // 3 - CT-e de Substituição
             with object ::infCte:infCTeNorm:infCteSub
                ::validateElement(:chCte)
-               ::validateElement(:refCteAnu)
+               // ::validateElement(:refCteAnu) // Classe será removida na versão 4.00 do CT-e
+
+/*
+               *****************************************************************
+               ** TAG "tomaICMS será removida a partir da versão 4.00 do CT-e **
+               *****************************************************************
 
                // Tomador: 1 – Contribuinte ICMS e não emitente do CTe
                if (::infCte:ide:indIEToma:value == "1") .and. tomaCNPJ != ::infCte:emit:CNPJ:value
@@ -673,6 +678,8 @@ method validarCTe() class TCTe
                      ::AAddError(:tomaICMS, "GRUPO DE DOCUMENTOS (NFe/NF/CTe) DO CT-e DE SUBSTITUIÇÃO NÃO INFORMADO")
                   endif
                endif
+
+*/
                ::validateElement(:indAlteraToma)
             endwith
 
