@@ -3,6 +3,8 @@
 -Iinclude
 -w2 -es2
 
+Aux_Decrypt.prg
+Aux_Encrypt.prg
 booleanToMySql.prg
 capitalize.prg
 date_and_week.prg
@@ -26,6 +28,6 @@ select_count.prg
 stringHbToMySql.prg
 stringMySqlToHb.prg
 sys_wait.prg
-textbox_onlost_focus.prg
 textbox_ongoto_focus.prg
+textbox_onlost_focus.prg
 xml_date_to_mysql.prg

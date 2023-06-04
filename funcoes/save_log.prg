@@ -1,12 +1,14 @@
 #include <hmg.ch>
 #include <fileio.ch>
 
-procedure saveLog(text)
+procedure saveLog(text, lEncrypt)
    local path := Memvar->appData:systemPath + 'log\'
    local date_format := Set(_SET_DATEFORMAT, "yyyy.mm.dd")
    local logFile := 'cte_log' + hb_ULeft(DToS(Date()),6) + '.txt'
    local h
    local t, msg := "", processos := ''
+
+   DEFAULT lEncrypt := false
 
    if hb_FileExists(path + logFile)
       h := FOpen(path + logFile, FO_WRITE)
@@ -39,6 +41,10 @@ procedure saveLog(text)
    endif
 
    processos += ProcName(1) + '(' + hb_ntos(ProcLine(1)) + ')'
+
+   if lEncrypt
+      msg := "[ENCRYPT START =>]" + hb_eol() + auxEncrypt(msg) + hb_eol() + [<= ENCRYPT END]
+   endif
 
    msg := hb_eol() + DtoC(Date()) + ' ' + Time() + ' [' + processos + '] ' + msg
 
