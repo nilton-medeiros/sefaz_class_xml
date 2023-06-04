@@ -3,9 +3,9 @@
 function auxEncrypt(string)
     local char, encrypted := ''
 
-    string := TirarAcentos(string)
+    string := removeAccentuation(string)
 
-    for each char in string 
+    for each char in string
         encrypted += hb_ntos(asc(char)) + '#|@'
     next
 
