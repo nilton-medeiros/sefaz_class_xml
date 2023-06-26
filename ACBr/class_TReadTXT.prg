@@ -97,9 +97,8 @@ method new(txt_file, comando) class TReadTXT
                ::pdfName := Left(::pdfName, At('.pdf', ::pdfName) + 3)
             case ('cancelar' $ lowerComando) .and. ('cancelamento' $ Lower(::text))
                jsonText := SubStr(::text, At('{', ::text), RAt( '}', ::text))
-               jsonText := Lower(jsonText)
-               bytes := hb_jsonDecode(jsonText, @jsonHash)
-               if !(bytes == 0) .and. hb_HGetRef(jsonHash, 'cancelamento')
+               jsonHash := ::jsonDecode(jsonText)
+               if hb_HGetRef(jsonHash, 'cancelamento')
                   jsonHash := jsonHash['cancelamento']
                   ::cStat := jsonHash['cstat']
                   if ValType(::cStat) == "N"
@@ -132,6 +131,26 @@ method new(txt_file, comando) class TReadTXT
                   ::isValid := False
                   ::xMotivo := comando + ': Certificado Digital A1: ATENCAO!!! Expirado em ' + DToC(::cert_expiration_date)
                endif
+            case ('statusservico' $ lowerComando)
+               jsonText := SubStr(::text, At('{', ::text), RAt( '}', ::text))
+               jsonHash := ::jsonDecode(jsonText)
+               if hb_HGetRef(jsonHash, 'status')
+                  jsonHash := jsonHash['status']
+                  ::cStat := jsonHash['cstat']
+                  if ValType(::cStat) == "N"
+                     ::cStat := hb_ntos(::cStat)
+                  endif
+                  ::dhRecbto := Left(StrTran(jsonHash['dhrecbto'], 'T', ' '), 19)
+                  ::xMotivo := jsonHash['xmotivo']
+                  ::nProt := jsonHash['veraplic']
+               else
+                  ::xMotivo := comando + ': Sem resposta da Sefaz'
+                  ::isValid := False
+               endif
+            case ('setformaemissao' $ lowerComando)
+               ::xMotivo := comando + ': OK'
+            case ('setambiente' $ lowerComando)
+               ::xMotivo := comando + ': OK'
             otherwise
                ::xMotivo := comando + ': Erro de comando'
                ::isValid := False
@@ -159,3 +178,15 @@ method new(txt_file, comando) class TReadTXT
    endif
    // saveLog({"isValid: ", iif(::isValid, 'True', 'False')})
 return self
+
+method jsonDecode(text) class TReadTXT
+   local bytes, jsonHash
+
+   text := Lower(text)
+   bytes := hb_jsonDecode(text, @jsonHash)
+
+   if (bytes == 0)
+      jsonHash := {}
+   endif
+
+return jsonHash

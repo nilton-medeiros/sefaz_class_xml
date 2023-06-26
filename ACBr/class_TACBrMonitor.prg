@@ -44,6 +44,7 @@ class TACBrMonitor
    data chDFe readonly
    data dfe_id readonly
    data xTpAmb readonly
+   data tpAmb readonly
    data emitCNPJ protected
    data dhEmi protected
    data situacao
@@ -81,6 +82,8 @@ class TACBrMonitor
 
    method new() constructor
    method StatusServico()
+   method SetFormaEmissao(tpEmis)
+   method SetAmbiente(tpEmis)
    method ObterCertificado()
    method Assinar()
    method Validar()
@@ -136,7 +139,8 @@ method new(params) class TACBrMonitor
          hb_DirBuild(::copyXMLPath)
       endif
    endif
-   ::xTpAmb := iif(params['tpAmb'] == '2', 'HOMOLOGAÇÃO', 'PRODUÇÃO')
+   ::tpAmb := params['tpAmb']
+   ::xTpAmb := iif(::tpAmb == '2', 'HOMOLOGAÇÃO', 'PRODUÇÃO')
    ::inFile := ::ACBr:inputPath + ::chDFe + '.txt'
    ::outFile := ::ACBr:outputPath + ::chDFe + '-resp.txt'
    ::tmpFile := ::systemPath + 'tmp\' + ::chDFe + '-resp.txt'
@@ -178,6 +182,16 @@ method StatusServico() class TACBrMonitor
    ::command := ::DFe + '.StatusServico'
    ::submit()
 return ::getReturnXML()
+
+method SetFormaEmissao(tpEmis) class TACBrMonitor
+   ::command := ::DFe + '.SetFormaEmissao' + '(' + tpEmis + ')'
+   ::submit()
+return Nil
+
+method SetAmbiente() class TACBrMonitor
+   ::command := ::DFe + '.SetAmbiente' + '(' + ::tpAmb + ')'
+   ::submit()
+return Nil
 
 method Assinar() class TACBrMonitor
    if !::serviceStatus
