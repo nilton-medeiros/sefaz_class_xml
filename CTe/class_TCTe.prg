@@ -240,7 +240,7 @@ method validarCTe() class TCTe
          ::validateElement(:toma4:email)
       endif
 
-      if :tpEmis:value == "5"
+      if :tpEmis:value $ "5|7|8"
          ::validateElement(:dhCont)
          ::validateElement(:xJust)
       endif
@@ -957,7 +957,7 @@ method criarCTeXML() class TCTe
                      FWrite(h, '</toma4>')
                   endif
                   ::addTagToWrite(h, :dhCont)
-                  ::addTagToWrite(h, :xJus)
+                  ::addTagToWrite(h, :xJust)
                FWrite(h, '</ide>')
             endwith
             if :compl:submit

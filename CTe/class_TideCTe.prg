@@ -74,9 +74,9 @@ class TideCTe
    data indIEToma
    data toma3
    data toma4
-   // dhCont e xJus: Informar apenas para tpEmis diferente de 1
+   // dhCont e xJust: Informar apenas para tpEmis diferente de 1
    data dhCont
-   data xJus
+   data xJust
    method new() constructor
 
 end class
@@ -198,7 +198,7 @@ method new() class TideCTe
                       'minLength' => 1, 'restriction' => "1|2|9", 'type' => "N"})
    ::toma3 := Ttoma3():new()
    ::toma4 := Ttoma4():new()
-   // dhCont e xJus: Informar apenas para tpEmis diferente de 1
+   // dhCont e xJust: Informar apenas para tpEmis diferente de 1
    ::dhCont := Telement():new({'name' => "dhCont", 'documentation' => "::e Hora da entrada em contingência"+CRLF+"Informar a ::e hora no formato AAAA-MM-DDTHH:MM:SS", 'minLength' => 19, 'required' => False, 'type' => "DT"})
-   ::xJus := Telement():new({'name' => "xJus", 'documentation' => "Justificativa da entrada em contingência", 'minLength' => 15, 'maxLength' => 256, 'required' => False})
+   ::xJust := Telement():new({'name' => "xJust", 'documentation' => "Justificativa da entrada em contingência", 'minLength' => 15, 'maxLength' => 256, 'required' => False})
 return self
