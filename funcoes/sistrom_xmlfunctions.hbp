@@ -20,6 +20,7 @@ get_process_id.prg
 ifnull_to_mysql.prg
 is_date_format.prg
 is_true.prg
+json_decode.prg
 msg_debug_info.prg
 only_numbers.prg
 remove_accentuation.prg
