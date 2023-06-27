@@ -56,7 +56,7 @@ end class
 
 method new(txt_file, comando) class TReadTXT
    local lowerComando, tpDFe := Left(comando, hb_At('.', comando)-1)
-   local bytes, jsonText, jsonHash, aTokens, df
+   local jsonText, jsonHash, aTokens, df
 
    ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
    ::nProt := 'CTeMonitor'
