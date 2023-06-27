@@ -310,6 +310,9 @@ method Cancelar(xJust) class TACBrMonitor
          ::dhRecbto := dateTime_hb_to_mysql(Date(), Time())
       endif
       AAdd(::events, {'dhRecbto' => ::dhRecbto, 'nProt' => ::nProt, 'cStat' => ::cStat, 'xMotivo' => ::xMotivo + ' | Ambiente de ' + ::xTpAmb})
+   else
+      // Erro ao cancelar, é retornado um TXT
+      returnStatus := ::getReturnTXT()
    endif
 return returnStatus
 
