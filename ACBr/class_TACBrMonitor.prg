@@ -183,13 +183,13 @@ method StatusServico() class TACBrMonitor
    ::submit()
 return ::getReturnXML()
 
-method SetFormaEmissao(tpEmis) class TACBrMonitor
-   ::command := ::DFe + '.SetFormaEmissao' + '(' + tpEmis + ')'
+method SetAmbiente() class TACBrMonitor
+   ::command := ::DFe + '.SetAmbiente' + '(' + ::tpAmb + ')'
    ::submit()
 return Nil
 
-method SetAmbiente() class TACBrMonitor
-   ::command := ::DFe + '.SetAmbiente' + '(' + ::tpAmb + ')'
+method SetFormaEmissao(tpEmis) class TACBrMonitor
+   ::command := ::DFe + '.SetFormaEmissao' + '(' + tpEmis + ')'
    ::submit()
 return Nil
 
