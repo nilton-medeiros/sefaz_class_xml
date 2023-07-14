@@ -179,7 +179,7 @@ method new() class TveicTracao
    ::documentation := 'veicTracao | Dados do Veículo com a Tração'
    ::value := 'TveicTracao'
    ::cInt := Telement():new({'name' => 'cInt', 'documentation' => 'Código interno do veículo', 'minLength' => 1, 'maxLength' => 10, 'required' => False})
-   ::placa := Telement():new({'name' => 'placa', 'documentation' => 'Placa do veículo', 'minLength' => 4})
+   ::placa := Telement():new({'name' => 'placa', 'documentation' => 'Placa do veículo', 'minLength' => 4, 'maxLength' => 7})
    ::RENAVAM := Telement():new({'name' => 'RENAVAM', 'documentation' => 'RENAVAM do veículo', 'minLength' => 9, 'maxLength' => 11, 'required' => False})
    ::tara := Telement():new({'name' => 'tara', 'documentation' => 'Tara em KG', 'minLength' => 1, 'maxLength' => 6, 'type' => 'N'})
    ::capKG := Telement():new({'name' => 'capKG', 'documentation' => 'Capacidade em KG', 'minLength' => 1, 'maxLength' => 6, 'required' => False, 'type' => 'N'})
@@ -248,7 +248,7 @@ method new(reboque) class TveicReboque
    ::submit := False
    ::value := 'TveicReboque'
    ::cInt := Telement():new({'name' => 'cInt', 'documentation' => 'Código interno do veículo', 'value' => reboque['cInt'], 'minLength' => 1, 'maxLength' => 10, 'required' => False})
-   ::placa := Telement():new({'name' => 'placa', 'documentation' => 'Placa do veículo', 'value' => reboque['placa'], 'minLength' => 4})
+   ::placa := Telement():new({'name' => 'placa', 'documentation' => 'Placa do veículo', 'value' => reboque['placa'], 'minLength' => 4, 'maxLength' => 7})
    ::RENAVAM := Telement():new({'name' => 'RENAVAM', 'documentation' => 'RENAVAM do veículo', 'value' => reboque['RENAVAM'], 'minLength' => 9, 'maxLength' => 11, 'required' => False})
    ::tara := Telement():new({'name' => 'tara', 'documentation' => 'Tara em KG', 'value' => reboque['tara'], 'minLength' => 1, 'maxLength' => 6, 'type' => 'N'})
    ::capKG := Telement():new({'name' => 'capKG', 'documentation' => 'Capacidade em KG', 'value' => reboque['capKG'], 'minLength' => 1, 'maxLength' => 6, 'required' => False, 'type' => 'N'})
