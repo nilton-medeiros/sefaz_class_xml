@@ -574,6 +574,15 @@ method read_return_xml(xmlRead, lidos, em_processamento) class TACBrMonitor
             ::situacao := 'ENCERRADO'
             ::setFileFromEvento(xml:xmlId, xmlRead)
             exit
+         case '135' // Evento registrado e vinculado ao DF-e
+            if (xml:tpEvento == '110111') .or. ('cancelar' $ Lower(::command))
+               ::situacao := 'CANCELADO'
+               ::setFileFromEvento(xml:xmlId, xmlRead)
+            elseif (xml:tpEvento == '110112') .or. ('encerrar' $ Lower(::command))
+               ::situacao := 'ENCERRADO'
+               ::setFileFromEvento(xml:xmlId, xmlRead)
+            endif
+            exit
          case '631' // Duplicidade de Evento - Encerramento de MDF-e já foi homologado
             if ('cancelar' $ Lower(::command))
                ::situacao := 'CANCELADO'
@@ -582,16 +591,7 @@ method read_return_xml(xmlRead, lidos, em_processamento) class TACBrMonitor
                ::situacao := 'ENCERRADO'
                ::setFileFromEvento(xml:xmlId, xmlRead)
             endif
-            exit
-         case '135' // Evento registrado e vinculado ao DF-e
-            if (xml:tpEvento == '110111')
-               ::situacao := 'CANCELADO'
-               ::setFileFromEvento(xml:xmlId, xmlRead)
-            elseif (xml:tpEvento == '110112')
-               ::situacao := 'ENCERRADO'
-               ::setFileFromEvento(xml:xmlId, xmlRead)
-            endif
-            exit
+         exit
          case '218' // Rejeição: CT-e já está cancelada na base de dados da SEFAZ
             ::situacao := 'CANCELADO'
             exit
